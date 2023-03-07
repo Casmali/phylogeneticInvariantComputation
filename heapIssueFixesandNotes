@@ -1,0 +1,28 @@
+gislinux1@GISLinux1:~$ export GC_INITIAL_HEAP_SIZE=2G
+gislinux1@GISLinux1:~$ M2
+
+
+S_4 no problem 
+
+S_5 ran(go back and double check that it needed the heap fix 
+
+
+
+S_6 still working on getting this running
+
+
+S_6 Error: 
+o29 : RingMap S <--- R
+Too many heap sections: Increase MAXHINCR or MAX_HEAP_SECTS
+Aborted (core dumped)
+
+Ok so..... ONce we got to S_6 we kept having it, 8GB did not work, I am trying 12 GB now.... If this doesnt work I might bump up to 16 but at that point I would really need to start considering how to use ram from other machines so I can have a ridiculous amount of ram......... lol.... 
+
+
+ok well we ran into an error again..... I am going to try to increase one final time to 16 GB of ram.... 
+Did not work!
+  Holy fuck lol.....
+
+
+
+
