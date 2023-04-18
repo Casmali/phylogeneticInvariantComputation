@@ -25,7 +25,7 @@ for i from 3 to n do (
 
 
 for j from 3 to n do (
-    title = concatenate({"S", "_",toString(j) });
+    title = concatenate({"S", "_",toString(j), "_", "initialVersion" });
     ind = j - 3;
     title << graphEdges#ind << endl << close
 )

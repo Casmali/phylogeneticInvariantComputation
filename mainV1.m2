@@ -1,17 +1,36 @@
 loadPackage "Graphs"
-loadPackage "PhylogeneticTrees"
-loadPackage "PHPack"
-loadPackage "Elimination"
-loadPackage "NumericalAlgebraicGeometry"
-loadPackage "PrimaryDecomposition"
+
+--The below are related packages one might find useful... were used during earlier versions, not currently being used
+--loadPackage "PhylogeneticTrees"
+--loadPackage "PHCack"
+--loadPackage "Elimination"
+--loadPackage "NumericalAlgebraicGeometry"
+--loadPackage "PrimaryDecomposition"
 
 
 --Here is where we initialize our graph
 --G = digraph ({{1,2},{2,1},{2,3},{1,3},{3,4},{4,3},{5,1},{1,5},{6,2},{2,6}}, EntryMode => "edges")
 --G = digraph ( {{1, 5}, {5, 1}, {2, 6}, {6, 2}, {3, 7}, {7, 3}, {4, 8}, {8, 4}, {5, 6}, {6, 5}, {6, 7}, {7, 6}, {5, 8}, {7, 8}}, EntryMode => "edges")
 --G = digraph ({{1, 4}, {4, 1}, {2, 5}, {5, 2}, {3, 6}, {6, 3}, {4, 5}, {5, 4}, {4, 6}, {5, 6}}, EntryMode => "edges")
-G = digraph ( {{1, 6}, {6, 1}, {2, 7}, {7, 2}, {3, 8}, {8, 3}, {4, 9}, {9, 4}, {5, 10}, {10, 5}, {7, 8}, {8, 7}, {8, 9}, {9, 8}, {9, 10}, {10, 9}, {10, 6}, {7, 6}}, EntryMode => "edges")
-
+--G = digraph ( {{1, 6}, {6, 1}, {2, 7}, {7, 2}, {3, 8}, {8, 3}, {4, 9}, {9, 4}, {5, 10}, {10, 5}, {7, 8}, {8, 7}, {8, 9}, {9, 8}, {9, 10}, {10, 9}, {10, 6}, {7, 6}}, EntryMode => "edges")
+G = digraph ( {{1,5},{5,1},{2,6},{6,2},{5,6},{6,5},{5,7},{6,7},{6,7},{7,8},{8,7},{8,9},{8,10},{10,8},{3,10},{10,3},{10,9},{9,4},{4,9}} , EntryMode => "edges")
+--
+--These are all generated via the other code in the github, note, labeling matters! This is for an initial run to have data for each of the sunlet networks
+--S_3
+--G = digraph ( {{1, 4}, {4, 1}, {2, 5}, {5, 2}, {3, 6}, {6, 3}, {5, 6}, {6, 5}, {6, 4}, {5, 4}}, EntryMode => "edges")
+--S_4
+--G = digraph ( {{1, 5}, {5, 1}, {2, 6}, {6, 2}, {3, 7}, {7, 3}, {4, 8}, {8, 4}, {6, 7}, {7, 6}, {7, 8}, {8, 7}, {8, 5}, {6, 5}}, EntryMode => "edges")
+--S_5
+--G = digraph ( {{1, 6}, {6, 1}, {2, 7}, {7, 2}, {3, 8}, {8, 3}, {4, 9}, {9, 4}, {5, 10}, {10, 5}, {7, 8}, {8, 7}, {8, 9}, {9, 8}, {9, 10}, {10, 9}, {10, 6}, {7, 6}}, EntryMode => "edges")
+--S_6
+--G = digraph ( {{1, 7}, {7, 1}, {2, 8}, {8, 2}, {3, 9}, {9, 3}, {4, 10}, {10, 4}, {5, 11}, {11, 5}, {6, 12}, {12, 6}, {8, 9}, {9, 8}, {9, 10}, {10, 9}, {10, 11}, {11, 10}, {11, 12}, {12, 11}, {12, 7}, {8, 7}}, EntryMode => "edges")
+--S_7
+-- here we get too many heap sections
+--G = digraph ( {{1, 8}, {8, 1}, {2, 9}, {9, 2}, {3, 10}, {10, 3}, {4, 11}, {11, 4}, {5, 12}, {12, 5}, {6, 13}, {13, 6}, {7, 14}, {14, 7}, {9, 10}, {10, 9}, {10, 11}, {11, 10}, {11, 12}, {12, 11}, {12, 13}, {13, 12}, {13, 14}, {14, 13}, {14, 8}, {9, 8}}, EntryMode => "edges")
+--S_8
+--G = digraph ( {{1, 9}, {9, 1}, {2, 10}, {10, 2}, {3, 11}, {11, 3}, {4, 12}, {12, 4}, {5, 13}, {13, 5}, {6, 14}, {14, 6}, {7, 15}, {15, 7}, {8, 16}, {16, 8}, {10, 11}, {11, 10}, {11, 12}, {12, 11}, {12, 13}, {13, 12}, {13, 14}, {14, 13}, {14, 15}, {15, 14}, {15, 16}, {16, 15}, {16, 9}, {10, 9}}, EntryMode => "edges")
+--S_9
+--G = digraph ( {{1, 10}, {10, 1}, {2, 11}, {11, 2}, {3, 12}, {12, 3}, {4, 13}, {13, 4}, {5, 14}, {14, 5}, {6, 15}, {15, 6}, {7, 16}, {16, 7}, {8, 17}, {17, 8}, {9, 18}, {18, 9}, {11, 12}, {12, 11}, {12, 13}, {13, 12}, {13, 14}, {14, 13}, {14, 15}, {15, 14}, {15, 16}, {16, 15}, {16, 17}, {17, 16}, {17, 18}, {18, 17}, {18, 10}, {11, 10}}, EntryMode => "edges")
 
 --list of reticulation vertices
 ret = {};
@@ -59,23 +78,48 @@ genBi = j -> (
 )
 
 --here we want to generate our list of trees upon which we are going to run our alg, we generate these by systemically removing the edges going into reticulation vertices
-treeOptions = genBi(length edgeList#0);
+treeOptions = genBi(#edgeList*2);
 treeList = {};
 
 for i in treeOptions do(
     tempTree = G;
-    sm = 0;
-    for j in i do (
-        sm = mod(sm + j, 2);
+    edge = {}; 
+    checks = {};
+    for j from 0 to #edgeList -1 do (
+        
+        a = 2*j;
+        f = 2*j +1;
+        --print(a,f);
+        checks = append(checks, mod(i#(a) +i#(f) ,2)); 
     );
-    print(sm);
-    if sm == 1 then (
+
+    tree = true;
+    for i in checks do (
+        if i == 1 then (
+            tree = true and tree; 
+        ) else (
+            tree = false and tree;
+        )
+    );
+
+
+    if tree then (
+
         for k from 0 to length(i)-1 do(
             if i#k == 0 then (
-                edgetoDelete = edgeList#0#k;
+                --HERE IS THE PROBLEM< THIS CODE ONLY WORKS FOR UNICYCLIC NETWORKS, JUST NEED A LIL MORE FOR LEVEL 1
+                firstInd = floor(k/2) ;
+                --this should be good as we have 0,1 for everyone, the next one is the one that is fucked up 
+
+                edg = lift(mod(k,2),ZZ);
+                --print("indecies");
+                print( firstInd, edg,k);
+                edgetoDelete = edgeList#firstInd#edg;
                 tempTree = deleteEdges(tempTree, {edgetoDelete});
             );
          );
+         print(i);
+         --print(checks);
          treeList = append(treeList, tempTree);
     ); 
 )
@@ -105,7 +149,7 @@ R = QQ qs
 --Okay!! Things to do: define S,  cut every edge of the graph for every q_, and then count # of leaves for each tree, this will give us a polynomial for each q!
 
 as = []
-for i from 1 to 2*(length leafList) do(
+for i from 1 to 2*(length leafList) + (#edgeList-1) do(
     stg0 = concatenate({"a", toString(i) ,"_0"});
     as = append(as,stg0);
     stg1 = concatenate({"a", toString(i) ,"_1"});
@@ -117,7 +161,7 @@ S = QQ as;
 cnt = 0
 parameterization = {};
 for i in qs do (
-    --every input has a specific output, we will count these here
+    --every individual segmentation gives specific values, we keep track of which we are using here
     entry = 0;
     for j in treeList do (
         Edi = edges j;
@@ -150,14 +194,18 @@ for i in qs do (
                 prod = S_sym;
             ) else (
                 sym = concatenate("a",toString(k+1),"_",toString(edgeSubscripts#(k)));
-                tem = prod * S_sym ;
-                prod = tem
+                --this next line is where our error is!!!! sooo... What is going on? 
+                --print(prod);
+                print(S);
+                print(sym);
+                tem = prod * S_sym;
+                --prod = tem
             )
         );
-        entry = entry + prod;
+        --entry = entry + prod;
     );
-    cnt = cnt + 1;
-    parameterization = append(parameterization, entry);
+    --cnt = cnt + 1;
+    --parameterization = append(parameterization, entry);
 )
 
 
@@ -173,7 +221,7 @@ I = ker phi
 
 probabilisticEDDegree = method();
 
-probabilisticEDDegree Ideal := ZZ => I -> (
+probabilisticEDDegree Ideal := ZZ => I -{{1,5},{5,1},{2,6},{6,2},{5,6},{6,5},{5,7},{6,7},{6,7},{7,8},{8,7},{8,9},{8,10},{10,8},{3,10},{10,3},{10,9},{9,4},{4,9}}> (
   --ring from your ideal
   R = ring I;
   --transpose jacobian
@@ -190,7 +238,7 @@ probabilisticEDDegree Ideal := ZZ => I -> (
 )
 
 
-sys = probabilisticEDDegree(I)
+sys = probEDDegree(I)
 system = {}
 for i from 0 to (#sys -1) do(
     system = append(system,sys_i)
